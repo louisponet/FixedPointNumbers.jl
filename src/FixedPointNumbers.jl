@@ -15,7 +15,7 @@ if isdefined(Base, :rem1)
     import Base: rem1
 end
 using Base: @pure
-
+using Compat
 # T => BaseType
 # f => Number of Bytes reserved for fractional part
 abstract type FixedPoint{T <: Integer, f} <: Real end
@@ -133,9 +133,9 @@ sizeof(::Type{T}) where {T <: FixedPoint} = sizeof(rawtype(T))
 
 # Promotions for reductions
 const Treduce = Float64
-if isdefined(Base, :r_promote)
-    Base.r_promote(::typeof(+), x::FixedPoint{T}) where {T} = Treduce(x)
-    Base.r_promote(::typeof(*), x::FixedPoint{T}) where {T} = Treduce(x)
+if isdefined(Base, :reduce_first)
+    Base.reduce_first(::typeof(+), x::FixedPoint{T}) where {T} = Treduce(x)
+    Base.reduce_first(::typeof(*), x::FixedPoint{T}) where {T} = Treduce(x)
 else
     Base.promote_sys_size(::Type{<:FixedPoint}) = Treduce
 end
